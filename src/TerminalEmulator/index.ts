@@ -38,7 +38,7 @@ export default class TerminalEmulator {
             }
         }
         if(this.commandNotFoundHandler) {
-            this.commandNotFoundHandler("", [], this.outputStream);
+            await this.commandNotFoundHandler(parserCommand.name, parserCommand.args, this.outputStream);
         }
     }
 }
