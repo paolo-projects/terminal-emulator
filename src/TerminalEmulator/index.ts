@@ -18,6 +18,10 @@ export default class TerminalEmulator {
         return entry;
     }
 
+    reset() {
+        this.commandsList = [];
+    }
+
     async parse(commandLine: string): Promise<void> {
         const parserCommand = this.tokenizer.parseCommandLine(commandLine);
         for(const command of this.commandsList) {
