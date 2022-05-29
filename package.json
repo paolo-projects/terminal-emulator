@@ -1,5 +1,5 @@
 {
-  "name": "terminal-emulator",
+  "name": "@paolo-projects/terminal-emulator",
   "version": "1.0.0",
   "description": "",
   "main": "build/index.js",
