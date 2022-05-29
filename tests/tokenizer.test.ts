@@ -1,10 +1,11 @@
 import FlagArgument from "../src/Argument/FlagArgument";
 import PositionalArgument from "../src/Argument/PositionalArgument";
 import ValueArgument from "../src/Argument/ValueArgument";
+import DefaultLocalization from "../src/Localization/DefaultLocalization";
 import Tokenizer from "../src/Tokenizer";
 
 test("tokenize string into cmdline args", () => {
-    const tokenizer = new Tokenizer();
+    const tokenizer = new Tokenizer(new DefaultLocalization());
     const command = tokenizer.parseCommandLine("cmname positarg --flagarg --valarg 123");
     expect(command.name).toEqual("cmname");
     expect(command.args).toHaveLength(3);
@@ -15,7 +16,7 @@ test("tokenize string into cmdline args", () => {
 });
 
 test("tokenize string into cmdline args 2", () => {
-    const tokenizer = new Tokenizer();
+    const tokenizer = new Tokenizer(new DefaultLocalization());
     const command = tokenizer.parseCommandLine("cmname positarg --flagarg --valarg 123 --flagarg2");
     expect(command.name).toEqual("cmname");
     expect(command.args).toHaveLength(4);
@@ -27,7 +28,7 @@ test("tokenize string into cmdline args 2", () => {
 });
 
 test("tokenize string into cmdline args 3", () => {
-    const tokenizer = new Tokenizer();
+    const tokenizer = new Tokenizer(new DefaultLocalization());
     const command = tokenizer.parseCommandLine("cmname positarg -- --valarg 123 --flagarg2");
     expect(command.name).toEqual("cmname");
     expect(command.args).toHaveLength(3);
@@ -38,7 +39,7 @@ test("tokenize string into cmdline args 3", () => {
 });
 
 test("tokenize string into cmdline args 2", () => {
-    const tokenizer = new Tokenizer();
+    const tokenizer = new Tokenizer(new DefaultLocalization());
     const command = tokenizer.parseCommandLine("cmname positarg --flagarg --valarg 123 positarg2");
     expect(command.name).toEqual("cmname");
     expect(command.args).toHaveLength(4);
@@ -50,7 +51,7 @@ test("tokenize string into cmdline args 2", () => {
 });
 
 test("tokenize string into cmdline args 3", () => {
-    const tokenizer = new Tokenizer();
+    const tokenizer = new Tokenizer(new DefaultLocalization());
     const command = tokenizer.parseCommandLine("cmname positarg                    positarg2");
     expect(command.name).toEqual("cmname");
     expect(command.args).toHaveLength(2);
@@ -60,7 +61,7 @@ test("tokenize string into cmdline args 3", () => {
 });
 
 test("tokenize string into cmdline args 4", () => {
-    const tokenizer = new Tokenizer();
+    const tokenizer = new Tokenizer(new DefaultLocalization());
     const command = tokenizer.parseCommandLine('cmname2abc --valarg "A quote from Dante: \\"Lasciate ogni speranza o voi che entrate\\""');
     expect(command.name).toEqual("cmname2abc");
     expect(command.args).toHaveLength(1);

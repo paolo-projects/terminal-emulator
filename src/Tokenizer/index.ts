@@ -2,12 +2,15 @@ import FlagArgument from "../Argument/FlagArgument";
 import PositionalArgument from "../Argument/PositionalArgument";
 import ValueArgument from "../Argument/ValueArgument";
 import Command from "../Command";
+import Localization from "../Localization";
 import TokenizerException from "./TokenizerException";
 
 export type ValueArgumentTypes = ValueArgument<string> | ValueArgument<number> | ValueArgument<boolean>;
 
 export default class Tokenizer {
     private matcher = /(?:\"?(\.+?)\"?|(\S+))/;
+
+    constructor(private localization: Localization) {}
     
     parseCommandLine(cmdLine: String): Command {
         let tokens = [];
@@ -54,10 +57,10 @@ export default class Tokenizer {
         }
 
         if(tokens.length == 0) {
-            throw new TokenizerException("Bad command (nothing found...)");
+            throw new TokenizerException(this.localization.NO_CMD_PROVIDED);
         }
         if(tokens[0].split(" ").length > 1) {
-            throw new TokenizerException("Bad command (space can't be part of a command)");
+            throw new TokenizerException(this.localization.BAD_COMMAND);
         }
 
         const command = tokens[0];

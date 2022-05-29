@@ -1,5 +1,6 @@
 import Argument from "../../Argument";
 import FlagArgument from "../../Argument/FlagArgument";
+import Localization from "../../Localization";
 import OutputStream from "../../OutputStream";
 import CommandCallback from "./CommandCallback";
 
@@ -19,17 +20,17 @@ export default class CommandEntry {
         return this;
     }
 
-    async launchCallback(args: Argument[], outputStream: OutputStream) {
+    async launchCallback(args: Argument[], outputStream: OutputStream, localization: Localization) {
         if(args.some(arg => arg instanceof FlagArgument && arg.name === "help")) {
             outputStream.writeLine(this.helpText);
         } else if (this.commandCallback) {
             try {
                 await this.commandCallback(this.name, args, outputStream);
             } catch(err: any) {
-                outputStream.writeLine(`An error occurred: ${err.message}`);
+                outputStream.writeLine(err.message);
             }
         } else {
-            outputStream.writeLine(`Command unimplemented`);
+            outputStream.writeLine(localization.CMD_UNIMPLEMENTED);
         }
     }
 }
