@@ -2,14 +2,15 @@
   "name": "terminal-emulator",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
     "build": "rimraf ./build && tsc",
     "start": "nodemon",
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Paolo Infante (www.paoloinfante.it)",
+  "license": "GPL-3.0",
   "devDependencies": {
     "@types/jest": "^27.5.1",
     "@types/node": "^17.0.36",
