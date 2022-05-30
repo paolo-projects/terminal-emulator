@@ -7,4 +7,5 @@ export default abstract class OutputStream {
         this.write(line);
         this.write(this.endLine);
     }
+    abstract clear(): void;
 }
