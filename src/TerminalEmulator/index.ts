@@ -17,6 +17,7 @@ export default class TerminalEmulator {
     private commandNotFoundHandler: CommandCallback | null = null;
 
     command(scheme: CommandScheme): TerminalEmulator {
+        scheme.setOutputStream(this.outputStream);
         this.commandSchemes.push(scheme);
         return this;
     }

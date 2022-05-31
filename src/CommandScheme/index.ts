@@ -3,6 +3,7 @@ import FlagArgument from '../Argument/FlagArgument';
 import PositionalArgument from '../Argument/PositionalArgument';
 import ValueArgument from '../Argument/ValueArgument';
 import Command from '../Command';
+import OutputStream from '../OutputStream';
 import ArgumentScheme, {
     FlagArgumentScheme,
     PositionalArgumentScheme,
@@ -15,16 +16,24 @@ export type CommandSchemeMatchCallback = (
 ) => Promise<boolean>;
 
 export default class CommandScheme {
+    private outputStream?: OutputStream;
+
     private constructor(
         public name: string,
         public argSchemes: ArgumentScheme[],
-        public matchCallback: CommandSchemeMatchCallback
+        public matchCallback: CommandSchemeMatchCallback,
+        public helpMessage?: string
     ) {}
+
+    setOutputStream(stream: OutputStream) {
+        this.outputStream = stream;
+    }
 
     static Builder = class {
         name: string;
         args: ArgumentScheme[] = [];
         schemeCallback?: CommandSchemeMatchCallback;
+        helpMsg?: string;
 
         constructor(commandName: string) {
             this.name = commandName;
@@ -56,6 +65,11 @@ export default class CommandScheme {
             return this;
         }
 
+        withHelpMessage(helpMessage: string) {
+            this.helpMsg = helpMessage;
+            return this;
+        }
+
         callback(callback: CommandSchemeMatchCallback) {
             this.schemeCallback = callback;
             return this;
@@ -65,7 +79,8 @@ export default class CommandScheme {
             return new CommandScheme(
                 this.name,
                 this.args,
-                this.schemeCallback!!
+                this.schemeCallback!!,
+                this.helpMsg
             );
         }
     };
@@ -73,6 +88,16 @@ export default class CommandScheme {
     async execute(command: Command): Promise<boolean> {
         if (command.name !== this.name) {
             return false;
+        }
+
+        if (
+            this.helpMessage &&
+            command.args.filter(
+                (arg) => arg instanceof FlagArgument && arg.name === 'help'
+            ).length
+        ) {
+            this.outputStream?.writeLine(this.helpMessage);
+            return true;
         }
 
         for (const argScheme of this.argSchemes) {
