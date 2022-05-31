@@ -12,7 +12,8 @@ import ArgumentScheme, {
 
 export type CommandSchemeMatchCallback = (
     command: string,
-    args: Argument[]
+    args: Argument[],
+    outputStream: OutputStream
 ) => Promise<boolean>;
 
 export default class CommandScheme {
@@ -142,6 +143,10 @@ export default class CommandScheme {
             }
         }
 
-        return await this.matchCallback(this.name, command.args);
+        return await this.matchCallback(
+            this.name,
+            command.args,
+            this.outputStream!!
+        );
     }
 }
