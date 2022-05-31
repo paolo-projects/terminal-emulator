@@ -19,7 +19,7 @@ export type CommandSchemeMatchCallback = (
 export default class CommandScheme {
     private outputStream?: OutputStream;
 
-    private constructor(
+    constructor(
         public name: string,
         public argSchemes: ArgumentScheme[],
         public matchCallback: CommandSchemeMatchCallback,
@@ -29,62 +29,6 @@ export default class CommandScheme {
     setOutputStream(stream: OutputStream) {
         this.outputStream = stream;
     }
-
-    static Builder = class {
-        name: string;
-        args: ArgumentScheme[] = [];
-        schemeCallback?: CommandSchemeMatchCallback;
-        helpMsg?: string;
-
-        constructor(commandName: string) {
-            this.name = commandName;
-        }
-
-        withPositionalArgument() {
-            const index =
-                this.args
-                    .filter((a) => a instanceof PositionalArgumentScheme)
-                    .reduce(
-                        (index, arg) =>
-                            Math.max(
-                                index,
-                                (arg as PositionalArgumentScheme).index
-                            ),
-                        -1
-                    ) + 1;
-            this.args.push(new PositionalArgumentScheme(index));
-            return this;
-        }
-
-        withFlagArgument(name: string) {
-            this.args.push(new FlagArgumentScheme(name));
-            return this;
-        }
-
-        withValueArgument(name: string) {
-            this.args.push(new ValueArgumentScheme(name));
-            return this;
-        }
-
-        withHelpMessage(helpMessage: string) {
-            this.helpMsg = helpMessage;
-            return this;
-        }
-
-        callback(callback: CommandSchemeMatchCallback) {
-            this.schemeCallback = callback;
-            return this;
-        }
-
-        build(): CommandScheme {
-            return new CommandScheme(
-                this.name,
-                this.args,
-                this.schemeCallback!!,
-                this.helpMsg
-            );
-        }
-    };
 
     async execute(command: Command): Promise<boolean> {
         if (command.name !== this.name) {
@@ -147,6 +91,62 @@ export default class CommandScheme {
             this.name,
             command.args,
             this.outputStream!!
+        );
+    }
+}
+
+export class CommandSchemeBuilder {
+    name: string;
+    args: ArgumentScheme[] = [];
+    schemeCallback?: CommandSchemeMatchCallback;
+    helpMsg?: string;
+
+    constructor(commandName: string) {
+        this.name = commandName;
+    }
+
+    withPositionalArgument(): CommandSchemeBuilder {
+        const index =
+            this.args
+                .filter((a) => a instanceof PositionalArgumentScheme)
+                .reduce(
+                    (index, arg) =>
+                        Math.max(
+                            index,
+                            (arg as PositionalArgumentScheme).index
+                        ),
+                    -1
+                ) + 1;
+        this.args.push(new PositionalArgumentScheme(index));
+        return this;
+    }
+
+    withFlagArgument(name: string): CommandSchemeBuilder {
+        this.args.push(new FlagArgumentScheme(name));
+        return this;
+    }
+
+    withValueArgument(name: string): CommandSchemeBuilder {
+        this.args.push(new ValueArgumentScheme(name));
+        return this;
+    }
+
+    withHelpMessage(helpMessage: string): CommandSchemeBuilder {
+        this.helpMsg = helpMessage;
+        return this;
+    }
+
+    callback(callback: CommandSchemeMatchCallback): CommandSchemeBuilder {
+        this.schemeCallback = callback;
+        return this;
+    }
+
+    build(): CommandScheme {
+        return new CommandScheme(
+            this.name,
+            this.args,
+            this.schemeCallback!!,
+            this.helpMsg
         );
     }
 }

@@ -1,7 +1,7 @@
 import Argument from '../Argument';
 import FlagArgument from '../Argument/FlagArgument';
 import ValueArgument from '../Argument/ValueArgument';
-import CommandScheme from '../CommandScheme';
+import { CommandSchemeBuilder } from '../CommandScheme';
 import DefaultLocalization from '../Localization/DefaultLocalization';
 import OutputStream from '../OutputStream';
 import TerminalEmulator from '../TerminalEmulator';
@@ -31,7 +31,7 @@ test('scheme parser', async () => {
     };
 
     terminal.command(
-        new CommandScheme.Builder('test')
+        new CommandSchemeBuilder('test')
             .withFlagArgument('arg1')
             .withValueArgument('arg2')
             .callback(commandCallback)
@@ -55,7 +55,7 @@ test('command not found', async () => {
     };
 
     terminal.command(
-        new CommandScheme.Builder('test')
+        new CommandSchemeBuilder('test')
             .withFlagArgument('arg1')
             .withValueArgument('arg2')
             .callback(commandCallback)
@@ -79,7 +79,7 @@ test('command not found 2', async () => {
     };
 
     terminal.command(
-        new CommandScheme.Builder('test')
+        new CommandSchemeBuilder('test')
             .withFlagArgument('arg1')
             .withValueArgument('arg2')
             .callback(commandCallback)
