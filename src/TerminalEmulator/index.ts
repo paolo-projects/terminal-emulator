@@ -1,23 +1,24 @@
-import Localization from "../Localization";
-import OutputStream from "../OutputStream";
-import Tokenizer from "../Tokenizer";
-import CommandEntry from "./CommandEntry";
-import CommandCallback from "./CommandEntry/CommandCallback";
+import CommandScheme from '../CommandScheme';
+import Localization from '../Localization';
+import OutputStream from '../OutputStream';
+import Tokenizer from '../Tokenizer';
+import CommandEntry from './CommandEntry';
+import CommandCallback from './CommandEntry/CommandCallback';
 
 export default class TerminalEmulator {
+    constructor(
+        private outputStream: OutputStream,
+        private localization: Localization
+    ) {}
 
-    constructor(private outputStream: OutputStream, private localization: Localization) {
-    
-    }
-
-    private commandsList: CommandEntry[] = [];
+    //private commandsList: CommandEntry[] = [];
+    private commandSchemes: CommandScheme[] = [];
     private tokenizer = new Tokenizer(this.localization);
     private commandNotFoundHandler: CommandCallback | null = null;
 
-    command(name: string): CommandEntry {
-        const entry = new CommandEntry(name);
-        this.commandsList.push(entry);
-        return entry;
+    command(scheme: CommandScheme): TerminalEmulator {
+        this.commandSchemes.push(scheme);
+        return this;
     }
 
     notFoundHandler(callback: CommandCallback) {
@@ -25,20 +26,26 @@ export default class TerminalEmulator {
     }
 
     reset() {
-        this.commandsList = [];
+        this.commandSchemes = [];
         this.commandNotFoundHandler = null;
     }
 
-    async parse(commandLine: string): Promise<void> {
-        const parserCommand = this.tokenizer.parseCommandLine(commandLine);
-        for(const command of this.commandsList) {
-            if(command.name === parserCommand.name) {
-                await command.launchCallback(parserCommand.args, this.outputStream, this.localization);
-                return;
+    async parse(commandLine: string): Promise<boolean> {
+        const parsedCommand = this.tokenizer.parseCommandLine(commandLine);
+        for (const scheme of this.commandSchemes.sort(
+            (a, b) => b.argSchemes.length - a.argSchemes.length
+        )) {
+            if (await scheme.execute(parsedCommand)) {
+                return true;
             }
         }
-        if(this.commandNotFoundHandler) {
-            await this.commandNotFoundHandler(parserCommand.name, parserCommand.args, this.outputStream);
+        if (this.commandNotFoundHandler) {
+            await this.commandNotFoundHandler(
+                parsedCommand.name,
+                parsedCommand.args,
+                this.outputStream
+            );
         }
+        return false;
     }
 }
