@@ -11,6 +11,18 @@ class DummyOutputStream extends OutputStream {
     clear(): void {}
 }
 
+class StringOutputStream extends OutputStream {
+    public buffer: string = '';
+
+    write(message: string): void {
+        this.buffer += message;
+    }
+
+    clear(): void {
+        this.buffer = '';
+    }
+}
+
 test('scheme parser', async () => {
     const terminal = new TerminalEmulator(
         new DummyOutputStream(),
@@ -87,4 +99,24 @@ test('command not found 2', async () => {
     );
 
     expect(await terminal.parse('test2 --arg1 --arg2 testval')).toBe(false);
+});
+
+test('command with bad arguments, should print the error message signaling bad arguments', async () => {
+    const outStream = new StringOutputStream('\n');
+
+    const terminal = new TerminalEmulator(outStream, new DefaultLocalization());
+
+    const callback = async (_: string, __: Argument[]) => true;
+
+    terminal.command(
+        new CommandSchemeBuilder('test')
+            .withFlagArgument('hello')
+            .withPositionalArgument()
+            .callback(callback)
+            .build()
+    );
+
+    await terminal.parse('test --hello');
+
+    expect(outStream.buffer.includes('Bad arguments'));
 });
