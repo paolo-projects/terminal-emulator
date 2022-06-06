@@ -33,20 +33,32 @@ export default class TerminalEmulator {
 
     async parse(commandLine: string): Promise<boolean> {
         const parsedCommand = this.tokenizer.parseCommandLine(commandLine);
-        for (const scheme of this.commandSchemes.sort(
-            (a, b) => b.argSchemes.length - a.argSchemes.length
-        )) {
-            if (await scheme.execute(parsedCommand)) {
-                return true;
+
+        const schemeSubset = this.commandSchemes
+            .filter((scheme) => scheme.name === parsedCommand.name)
+            .sort((a, b) => b.argSchemes.length - a.argSchemes.length);
+
+        if (schemeSubset.length) {
+            for (const scheme of schemeSubset) {
+                if (await scheme.execute(parsedCommand)) {
+                    return true;
+                }
             }
-        }
-        if (this.commandNotFoundHandler) {
+
+            this.outputStream.writeLine(
+                this.localization.BAD_COMMAND_ARGS.replace(
+                    '%s',
+                    parsedCommand.name
+                )
+            );
+        } else if (this.commandNotFoundHandler) {
             await this.commandNotFoundHandler(
                 parsedCommand.name,
                 parsedCommand.args,
                 this.outputStream
             );
         }
+
         return false;
     }
 }

@@ -102,7 +102,7 @@ The supported argument types are:
 
 -   Flag arguments
 
-    Flag arguments are like a switch. When they're present, the application knows something has to be done. Example:
+    Flag arguments are like a switch. When added to the command, the application knows that something has to be done. Example:
 
     `command --arg`
 
