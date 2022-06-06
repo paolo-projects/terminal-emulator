@@ -92,6 +92,8 @@ Output:
   Hello, John
 ```
 
+## Argument types
+
 The supported argument types are:
 
 -   Positional arguments
@@ -100,14 +102,32 @@ The supported argument types are:
 
     `command arg1 arg2 arg3 ...`
 
+    ```typescript
+    new CommandSchemeBuilder('hello').withPositionalArgument();
+    ```
+
 -   Flag arguments
 
     Flag arguments are like a switch. When added to the command, the application knows that something has to be done. Example:
 
     `command --arg`
 
+    ```typescript
+    new CommandSchemeBuilder('hello').withFlagArgument('arg');
+    ```
+
 -   Value arguments
 
     Value arguments are key/value type arguments. They're essentially a flag argument followed by a positional argument. Equivalent to options passed to the application, they specify how something has to be done, like in this example:
 
     `bake --food bread --temperature high`
+
+    ```typescript
+    new CommandSchemeBuilder('hello').withValueArgument('food');
+    ```
+
+## Help message
+
+An help message is displayed every time a command is invoked with the `--help` flag argument. If more schemes sharing the same command are added, make sure you add the help message, through the `.withHelpMessage(message)` function on the builder class, to only one of the entries. Otherwise only the first entry with the help message will be displayed.
+
+The help text will also be displayed when the command is invoked with wrong arguments.
