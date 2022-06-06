@@ -36,16 +36,6 @@ export default class CommandScheme {
             return false;
         }
 
-        if (
-            this.helpMessage &&
-            command.args.filter(
-                (arg) => arg instanceof FlagArgument && arg.name === 'help'
-            ).length
-        ) {
-            this.outputStream?.writeLine(this.helpMessage);
-            return true;
-        }
-
         for (const argScheme of this.argSchemes) {
             switch (argScheme.argType) {
                 case 'positional':

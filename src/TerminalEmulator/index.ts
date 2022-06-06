@@ -39,6 +39,13 @@ export default class TerminalEmulator {
             .sort((a, b) => b.argSchemes.length - a.argSchemes.length);
 
         if (schemeSubset.length) {
+            if (parsedCommand.args.find((arg) => arg.name === 'help')) {
+                this.outputStream.writeLine(
+                    schemeSubset.find((s) => s.helpMessage)?.helpMessage || ''
+                );
+                return true;
+            }
+
             for (const scheme of schemeSubset) {
                 if (await scheme.execute(parsedCommand)) {
                     return true;
@@ -50,6 +57,9 @@ export default class TerminalEmulator {
                     '%s',
                     parsedCommand.name
                 )
+            );
+            this.outputStream.writeLine(
+                schemeSubset.find((s) => s.helpMessage)?.helpMessage || ''
             );
         } else if (this.commandNotFoundHandler) {
             await this.commandNotFoundHandler(
