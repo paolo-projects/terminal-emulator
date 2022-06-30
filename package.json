@@ -1,6 +1,6 @@
 {
     "name": "@paolo-projects/terminal-emulator",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "",
     "main": "build/index.js",
     "types": "build/index.d.ts",
@@ -10,7 +10,7 @@
         "test": "jest"
     },
     "author": "Paolo Infante (www.paoloinfante.it)",
-    "license": "GPL-3.0",
+    "license": "MIT",
     "devDependencies": {
         "@types/jest": "^27.5.1",
         "@types/node": "^17.0.36",

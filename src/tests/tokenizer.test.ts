@@ -11,26 +11,9 @@ test('tokenize simple string into command with args', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(3);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof PositionalArgument && arg.value === 'positarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) => arg instanceof FlagArgument && arg.name === 'flagarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof ValueArgument &&
-                arg.name === 'valarg' &&
-                arg.value === 123
-        )
-    ).toHaveLength(1);
-    expect(command.args.filter((arg) => arg.name === 'hello')).toHaveLength(0);
+    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
+    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
+    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
 });
 
 test('tokenize string with 2 flag args', () => {
@@ -40,31 +23,10 @@ test('tokenize string with 2 flag args', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(4);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof PositionalArgument && arg.value === 'positarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) => arg instanceof FlagArgument && arg.name === 'flagarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof ValueArgument &&
-                arg.name === 'valarg' &&
-                arg.value === 123
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) => arg instanceof FlagArgument && arg.name === 'flagarg2'
-        )
-    ).toHaveLength(1);
-    expect(command.args.filter((arg) => arg.name === 'hello')).toHaveLength(0);
+    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
+    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
+    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
+    expect(command.args).toContainEqual(new FlagArgument('flagarg2'));
 });
 
 test('tokenize string with bad flag argument', () => {
@@ -74,26 +36,9 @@ test('tokenize string with bad flag argument', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(3);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof PositionalArgument && arg.value === 'positarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof ValueArgument &&
-                arg.name === 'valarg' &&
-                arg.value === 123
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) => arg instanceof FlagArgument && arg.name === 'flagarg2'
-        )
-    ).toHaveLength(1);
-    expect(command.args.filter((arg) => arg.name === 'hello')).toHaveLength(0);
+    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
+    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
+    expect(command.args).toContainEqual(new FlagArgument('flagarg2'));
 });
 
 test('tokenize string with displaced positional args', () => {
@@ -103,32 +48,10 @@ test('tokenize string with displaced positional args', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(4);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof PositionalArgument && arg.value === 'positarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) => arg instanceof FlagArgument && arg.name === 'flagarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof ValueArgument &&
-                arg.name === 'valarg' &&
-                arg.value === 123
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof PositionalArgument && arg.value === 'positarg2'
-        )
-    ).toHaveLength(1);
-    expect(command.args.filter((arg) => arg.name === 'hello')).toHaveLength(0);
+    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
+    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
+    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
+    expect(command.args).toContainEqual(new PositionalArgument(1, 'positarg2'));
 });
 
 test('tokenize string with a lot of spaces', () => {
@@ -138,19 +61,8 @@ test('tokenize string with a lot of spaces', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(2);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof PositionalArgument && arg.value === 'positarg'
-        )
-    ).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof PositionalArgument && arg.value === 'positarg2'
-        )
-    ).toHaveLength(1);
-    expect(command.args.filter((arg) => arg.name === 'hello')).toHaveLength(0);
+    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
+    expect(command.args).toContainEqual(new PositionalArgument(1, 'positarg2'));
 });
 
 test('tokenize string with quoted argument, and escaped quotes', () => {
@@ -160,14 +72,22 @@ test('tokenize string with quoted argument, and escaped quotes', () => {
     );
     expect(command.name).toEqual('cmname2abc');
     expect(command.args).toHaveLength(1);
-    expect(
-        command.args.filter(
-            (arg) =>
-                arg instanceof ValueArgument &&
-                arg.name === 'valarg' &&
-                arg.value ===
-                    'A quote from Dante: "Lasciate ogni speranza o voi che entrate"'
+    expect(command.args).toContainEqual(
+        new ValueArgument(
+            'valarg',
+            'A quote from Dante: "Lasciate ogni speranza o voi che entrate"'
         )
-    ).toHaveLength(1);
-    expect(command.args.filter((arg) => arg.name === 'hello')).toHaveLength(0);
+    );
+});
+
+test('tokenize command with a lot of spaces between args', () => {
+    const tokenizer = new Tokenizer(new DefaultLocalization());
+    const command = tokenizer.parseCommandLine(
+        'hello               posarg            --flagarg  --valarg    value'
+    );
+    expect(command.name).toEqual('hello');
+    expect(command.args).toHaveLength(3);
+    expect(command.args).toContainEqual(new PositionalArgument(0, 'posarg'));
+    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
+    expect(command.args).toContainEqual(new ValueArgument('valarg', 'value'));
 });
