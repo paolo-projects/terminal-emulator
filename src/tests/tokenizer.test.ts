@@ -11,9 +11,11 @@ test('tokenize simple string into command with args', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(3);
-    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
-    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
-    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
+    expect(command.args.hasArgument('positarg')).toBe(true);
+    expect(command.args.hasArgument('flagarg')).toBe(true);
+    expect(command.args.getArgument('flagarg', FlagArgument)).toBeTruthy();
+    expect(command.args.hasArgument('valarg')).toBe(true);
+    expect(command.args.getArgument('valarg', ValueArgument<number>)?.value).toBe(123);
 });
 
 test('tokenize string with 2 flag args', () => {
@@ -23,10 +25,10 @@ test('tokenize string with 2 flag args', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(4);
-    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
-    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
-    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
-    expect(command.args).toContainEqual(new FlagArgument('flagarg2'));
+    expect(command.args.hasArgument('positarg')).toBe(true);
+    expect(command.args.getArgument('flagarg', FlagArgument)).toBeTruthy();
+    expect(command.args.getArgument('valarg', ValueArgument<number>)?.value).toBe(123);
+    expect(command.args.getArgument('flagarg2', FlagArgument)).toBeTruthy();
 });
 
 test('tokenize string with bad flag argument', () => {
@@ -36,9 +38,9 @@ test('tokenize string with bad flag argument', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(3);
-    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
-    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
-    expect(command.args).toContainEqual(new FlagArgument('flagarg2'));
+    expect(command.args.getArgument('positarg', PositionalArgument)).toBeTruthy();
+    expect(command.args.getArgument('valarg', ValueArgument<number>)?.value).toBe(123);
+    expect(command.args.getArgument('flagarg2', FlagArgument)).toBeTruthy();
 });
 
 test('tokenize string with displaced positional args', () => {
@@ -48,10 +50,10 @@ test('tokenize string with displaced positional args', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(4);
-    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
-    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
-    expect(command.args).toContainEqual(new ValueArgument('valarg', 123));
-    expect(command.args).toContainEqual(new PositionalArgument(1, 'positarg2'));
+    expect(command.args.hasArgument('positarg')).toBe(true);
+    expect(command.args.hasArgument('flagarg')).toBe(true);
+    expect(command.args.hasArgument('valarg')).toBe(true);
+    expect(command.args.hasArgument('positarg2')).toBe(true);
 });
 
 test('tokenize string with a lot of spaces', () => {
@@ -61,8 +63,8 @@ test('tokenize string with a lot of spaces', () => {
     );
     expect(command.name).toEqual('cmname');
     expect(command.args).toHaveLength(2);
-    expect(command.args).toContainEqual(new PositionalArgument(0, 'positarg'));
-    expect(command.args).toContainEqual(new PositionalArgument(1, 'positarg2'));
+    expect(command.args.hasArgument('positarg')).toBe(true);
+    expect(command.args.hasArgument('positarg2')).toBe(true);
 });
 
 test('tokenize string with quoted argument, and escaped quotes', () => {
@@ -72,12 +74,10 @@ test('tokenize string with quoted argument, and escaped quotes', () => {
     );
     expect(command.name).toEqual('cmname2abc');
     expect(command.args).toHaveLength(1);
-    expect(command.args).toContainEqual(
-        new ValueArgument(
-            'valarg',
+    expect(command.args.hasArgument('valarg')).toBe(true);
+    expect(command.args.getArgument('valarg', ValueArgument<string>)?.value).toBe(
             'A quote from Dante: "Lasciate ogni speranza o voi che entrate"'
-        )
-    );
+        );
 });
 
 test('tokenize command with a lot of spaces between args', () => {
@@ -87,7 +87,8 @@ test('tokenize command with a lot of spaces between args', () => {
     );
     expect(command.name).toEqual('hello');
     expect(command.args).toHaveLength(3);
-    expect(command.args).toContainEqual(new PositionalArgument(0, 'posarg'));
-    expect(command.args).toContainEqual(new FlagArgument('flagarg'));
-    expect(command.args).toContainEqual(new ValueArgument('valarg', 'value'));
+    expect(command.args.getArgument('posarg', PositionalArgument)).toBeTruthy();
+    expect(command.args.getArgument('posaaarg', PositionalArgument)).not.toBeTruthy();
+    expect(command.args.getArgument('flagarg', FlagArgument)).toBeTruthy();
+    expect(command.args.getArgument('valarg', ValueArgument<string>)?.value).toBe('value');
 });

@@ -1,6 +1,10 @@
-import Argument from "../../Argument";
-import OutputStream from "../../OutputStream";
+import ArgumentList from '../../Argument/ArgumentList';
+import OutputStream from '../../OutputStream';
 
-type CommandCallback = (name: string, args: Argument[], outputStream: OutputStream) => Promise<void>;
+type CommandCallback = (
+    name: string,
+    args: ArgumentList,
+    outputStream: OutputStream
+) => Promise<void>;
 
 export default CommandCallback;

@@ -1,4 +1,5 @@
 import Argument from '../Argument';
+import ArgumentList from '../Argument/ArgumentList';
 import FlagArgument from '../Argument/FlagArgument';
 import ValueArgument from '../Argument/ValueArgument';
 import { CommandSchemeBuilder } from '../CommandScheme';
@@ -31,7 +32,7 @@ test('scheme parser', async () => {
 
     const commandCallback = async (
         name: string,
-        args: Argument[]
+        args: ArgumentList
     ): Promise<boolean> => {
         expect(name).toBe('test');
         expect(args).toHaveLength(2);
@@ -61,7 +62,7 @@ test('command not found', async () => {
 
     const commandCallback = async (
         name: string,
-        args: Argument[]
+        args: ArgumentList
     ): Promise<boolean> => {
         throw new Error('Should not reach here');
     };
@@ -85,7 +86,7 @@ test('command not found 2', async () => {
 
     const commandCallback = async (
         name: string,
-        args: Argument[]
+        args: ArgumentList
     ): Promise<boolean> => {
         throw new Error('Should not reach here');
     };
@@ -106,7 +107,7 @@ test('command with bad arguments, should print the error message signaling bad a
 
     const terminal = new TerminalEmulator(outStream, new DefaultLocalization());
 
-    const callback = async (_: string, __: Argument[]) => true;
+    const callback = async (_: string, __: ArgumentList) => true;
 
     terminal.command(
         new CommandSchemeBuilder('test')

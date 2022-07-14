@@ -1,3 +1,4 @@
+import FlagArgument from '../Argument/FlagArgument';
 import CommandScheme from '../CommandScheme';
 import Localization from '../Localization';
 import OutputStream from '../OutputStream';
@@ -39,7 +40,7 @@ export default class TerminalEmulator {
             .sort((a, b) => b.argSchemes.length - a.argSchemes.length);
 
         if (schemeSubset.length) {
-            if (parsedCommand.args.find((arg) => arg.name === 'help')) {
+            if (parsedCommand.args.getArgument('help', FlagArgument)) {
                 this.outputStream.writeLine(
                     schemeSubset.find((s) => s.helpMessage)?.helpMessage || ''
                 );

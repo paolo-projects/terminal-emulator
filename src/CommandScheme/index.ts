@@ -1,5 +1,4 @@
-import { cp } from 'fs';
-import Argument from '../Argument';
+import ArgumentList from '../Argument/ArgumentList';
 import FlagArgument from '../Argument/FlagArgument';
 import PositionalArgument from '../Argument/PositionalArgument';
 import ValueArgument from '../Argument/ValueArgument';
@@ -13,7 +12,7 @@ import ArgumentScheme, {
 
 export type CommandSchemeMatchCallback = (
     command: string,
-    args: Argument[],
+    args: ArgumentList,
     outputStream: OutputStream
 ) => Promise<boolean>;
 
@@ -40,7 +39,7 @@ export default class CommandScheme {
             switch (argScheme.argType) {
                 case 'positional':
                     if (
-                        !command.args.filter(
+                        !Array.from(command.args).filter(
                             (arg) =>
                                 arg instanceof PositionalArgument &&
                                 arg.index ===
@@ -53,7 +52,7 @@ export default class CommandScheme {
                     break;
                 case 'flag':
                     if (
-                        !command.args.filter(
+                        !Array.from(command.args).filter(
                             (arg) =>
                                 arg instanceof FlagArgument &&
                                 arg.name ===
@@ -65,7 +64,7 @@ export default class CommandScheme {
                     break;
                 case 'value':
                     if (
-                        !command.args.filter(
+                        !Array.from(command.args).filter(
                             (arg) =>
                                 arg instanceof ValueArgument &&
                                 arg.name ===

@@ -1,3 +1,4 @@
+import ArgumentList from '../Argument/ArgumentList';
 import FlagArgument from '../Argument/FlagArgument';
 import PositionalArgument from '../Argument/PositionalArgument';
 import ValueArgument from '../Argument/ValueArgument';
@@ -98,7 +99,7 @@ export default class Tokenizer {
             args.push(new FlagArgument(previousArg));
         }
 
-        return new Command(command, args);
+        return new Command(command, new ArgumentList(args));
     }
 
     private getValueArgFromString(
