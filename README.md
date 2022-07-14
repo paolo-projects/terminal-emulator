@@ -23,7 +23,7 @@ You then add it through the `.command(...)` method to the terminal emulator inst
 
 After you defined your schemes with your callbacks, you then call the `.parse(string)` method on the emulator, and it will tokenize the command line, parse the tokens and assign them to the appropriate category (command name, positional argument, flag argument, value argument). It will then check the schemes and when a match is found it will call the callback defined into the scheme, which is defined like so:
 
-`(command: string, args: Argument[], outputStream: OutputStream) => Promise<boolean>`
+`(command: string, args: ArgumentList, outputStream: OutputStream) => Promise<boolean>`
 
 The callback returns a promise to support async operations. This is needed when a command executes an HTTP request, or file I/O, to correctly signal the end of the operation to the caller. For instance, it is needed when you want to disable the terminal input while the command is executing.
 
@@ -59,12 +59,10 @@ Now you can start adding schemes to the emulator instance.
 ```typescript
 const callback = async (
     command: string,
-    args: Argument[],
+    args: ArgumentList,
     outputStream: OutputStream
 ) => {
-    const name = args.find(
-        (arg) => arg instanceof ValueArgument && arg.name === 'name'
-    )?.value;
+    const name = args.getArgument('name', ValueArgument<string>)?.value;
     outputStream.writeLine(`Hello, ${name}`);
 
     return true;
