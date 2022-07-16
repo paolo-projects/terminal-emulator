@@ -22,7 +22,11 @@ A command scheme can be added through the `.command(...)` method on the emulator
 After you defined your schemes with your callbacks, you then call the `.parse(string)` method on the emulator, and it will tokenize the command line, parse the tokens and assign them to the appropriate category (command name, positional argument, flag argument, value argument). It will then check the schemes and when a match is found it will call the callback defined into the scheme, which is defined like so:
 
 ```typescript
-type CommandCallback = (command: string, args: ArgumentList, outputStream: OutputStream) => Promise<boolean>
+type CommandSchemeMatchCallback = (
+    command: string,
+    args: ArgumentList,
+    outputStream: OutputStream
+) => Promise<boolean>;
 ```
 
 The callback returns a promise to support async operations. This is needed when a command executes an HTTP request, or file I/O, to correctly signal the end of the operation to the caller. For instance, it is needed when you want to disable the terminal input while the command is executing.

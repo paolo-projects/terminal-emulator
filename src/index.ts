@@ -6,10 +6,10 @@ import Argument from './Argument';
 import FlagArgument from './Argument/FlagArgument';
 import PositionalArgument from './Argument/PositionalArgument';
 import ValueArgument from './Argument/ValueArgument';
-import CommandCallback from './TerminalEmulator/CommandEntry/CommandCallback';
 import TokenizerException from './Tokenizer/TokenizerException';
 import CommandScheme from './CommandScheme';
 import CommandSchemeError from './CommandScheme/CommandSchemeError';
+import { CommandSchemeMatchCallback } from './CommandScheme';
 
 export {
     TerminalEmulator,
@@ -20,7 +20,7 @@ export {
     FlagArgument,
     PositionalArgument,
     ValueArgument,
-    CommandCallback,
+    CommandSchemeMatchCallback,
     TokenizerException,
     CommandScheme,
     CommandSchemeError,

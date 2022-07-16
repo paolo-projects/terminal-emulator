@@ -1,4 +1,3 @@
-import Argument from '../Argument';
 import ArgumentList from '../Argument/ArgumentList';
 import FlagArgument from '../Argument/FlagArgument';
 import ValueArgument from '../Argument/ValueArgument';

@@ -1,10 +1,8 @@
 import FlagArgument from '../Argument/FlagArgument';
-import CommandScheme from '../CommandScheme';
+import CommandScheme, { CommandSchemeMatchCallback } from '../CommandScheme';
 import Localization from '../Localization';
 import OutputStream from '../OutputStream';
 import Tokenizer from '../Tokenizer';
-import CommandEntry from './CommandEntry';
-import CommandCallback from './CommandEntry/CommandCallback';
 
 export default class TerminalEmulator {
     constructor(
@@ -15,7 +13,7 @@ export default class TerminalEmulator {
     //private commandsList: CommandEntry[] = [];
     private commandSchemes: CommandScheme[] = [];
     private tokenizer = new Tokenizer(this.localization);
-    private commandNotFoundHandler: CommandCallback | null = null;
+    private commandNotFoundHandler: CommandSchemeMatchCallback | null = null;
 
     command(name: string): CommandScheme {
         const scheme = new CommandScheme(name);
@@ -23,7 +21,7 @@ export default class TerminalEmulator {
         return scheme;
     }
 
-    notFoundHandler(callback: CommandCallback) {
+    notFoundHandler(callback: CommandSchemeMatchCallback) {
         this.commandNotFoundHandler = callback;
     }
 
