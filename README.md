@@ -97,7 +97,7 @@ The supported argument types are:
     `command arg1 arg2 arg3 ...`
 
     ```typescript
-    new CommandSchemeBuilder('hello').withPositionalArgument();
+    .command('hello').withPositionalArgument();
     ```
 
 -   Flag arguments
@@ -107,7 +107,7 @@ The supported argument types are:
     `command --arg`
 
     ```typescript
-    new CommandSchemeBuilder('hello').withFlagArgument('arg');
+    .command('hello').withFlagArgument('arg');
     ```
 
 -   Value arguments
@@ -117,7 +117,7 @@ The supported argument types are:
     `bake --food bread --temperature high`
 
     ```typescript
-    new CommandSchemeBuilder('hello').withValueArgument('food');
+    .command('hello').withValueArgument('food');
     ```
 
 ## Help message
