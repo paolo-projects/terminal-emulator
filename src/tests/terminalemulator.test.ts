@@ -2,7 +2,6 @@ import Argument from '../Argument';
 import ArgumentList from '../Argument/ArgumentList';
 import FlagArgument from '../Argument/FlagArgument';
 import ValueArgument from '../Argument/ValueArgument';
-import { CommandSchemeBuilder } from '../CommandScheme';
 import DefaultLocalization from '../Localization/DefaultLocalization';
 import OutputStream from '../OutputStream';
 import TerminalEmulator from '../TerminalEmulator';
@@ -43,13 +42,11 @@ test('scheme parser', async () => {
         return true;
     };
 
-    terminal.command(
-        new CommandSchemeBuilder('test')
-            .withFlagArgument('arg1')
-            .withValueArgument('arg2')
-            .callback(commandCallback)
-            .build()
-    );
+    terminal
+        .command('test')
+        .withFlagArgument('arg1')
+        .withValueArgument('arg2')
+        .callback(commandCallback);
 
     expect(await terminal.parse('test --arg1 --arg2 testval')).toBe(true);
 });
@@ -67,13 +64,11 @@ test('command not found', async () => {
         throw new Error('Should not reach here');
     };
 
-    terminal.command(
-        new CommandSchemeBuilder('test')
-            .withFlagArgument('arg1')
-            .withValueArgument('arg2')
-            .callback(commandCallback)
-            .build()
-    );
+    terminal
+        .command('test')
+        .withFlagArgument('arg1')
+        .withValueArgument('arg2')
+        .callback(commandCallback);
 
     expect(await terminal.parse('test --arg2 testval')).toBe(false);
 });
@@ -91,13 +86,11 @@ test('command not found 2', async () => {
         throw new Error('Should not reach here');
     };
 
-    terminal.command(
-        new CommandSchemeBuilder('test')
-            .withFlagArgument('arg1')
-            .withValueArgument('arg2')
-            .callback(commandCallback)
-            .build()
-    );
+    terminal
+        .command('test')
+        .withFlagArgument('arg1')
+        .withValueArgument('arg2')
+        .callback(commandCallback);
 
     expect(await terminal.parse('test2 --arg1 --arg2 testval')).toBe(false);
 });
@@ -109,13 +102,11 @@ test('command with bad arguments, should print the error message signaling bad a
 
     const callback = async (_: string, __: ArgumentList) => true;
 
-    terminal.command(
-        new CommandSchemeBuilder('test')
-            .withFlagArgument('hello')
-            .withPositionalArgument()
-            .callback(callback)
-            .build()
-    );
+    terminal
+        .command('test')
+        .withFlagArgument('hello')
+        .withPositionalArgument()
+        .callback(callback);
 
     await terminal.parse('test --hello');
 

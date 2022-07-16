@@ -17,10 +17,10 @@ export default class TerminalEmulator {
     private tokenizer = new Tokenizer(this.localization);
     private commandNotFoundHandler: CommandCallback | null = null;
 
-    command(scheme: CommandScheme): TerminalEmulator {
-        scheme.setOutputStream(this.outputStream);
+    command(name: string): CommandScheme {
+        const scheme = new CommandScheme(name);
         this.commandSchemes.push(scheme);
-        return this;
+        return scheme;
     }
 
     notFoundHandler(callback: CommandCallback) {

@@ -18,19 +18,21 @@ export type CommandSchemeMatchCallback = (
 
 export default class CommandScheme {
     private outputStream?: OutputStream;
+    public argSchemes: ArgumentScheme[] = [];
+    public matchCallback?: CommandSchemeMatchCallback;
+    public helpMessage?: string;
 
-    constructor(
-        public name: string,
-        public argSchemes: ArgumentScheme[],
-        public matchCallback: CommandSchemeMatchCallback,
-        public helpMessage?: string
-    ) {}
+    constructor(public name: string) {}
 
     setOutputStream(stream: OutputStream) {
         this.outputStream = stream;
     }
 
     async execute(command: Command): Promise<boolean> {
+        if (!this.matchCallback) {
+            throw new Error('No callback specified for this command scheme');
+        }
+
         if (command.name !== this.name) {
             return false;
         }
@@ -83,21 +85,10 @@ export default class CommandScheme {
             this.outputStream!!
         );
     }
-}
 
-export class CommandSchemeBuilder {
-    name: string;
-    args: ArgumentScheme[] = [];
-    schemeCallback?: CommandSchemeMatchCallback;
-    helpMsg?: string;
-
-    constructor(commandName: string) {
-        this.name = commandName;
-    }
-
-    withPositionalArgument(): CommandSchemeBuilder {
+    withPositionalArgument(): CommandScheme {
         const index =
-            this.args
+            this.argSchemes
                 .filter((a) => a instanceof PositionalArgumentScheme)
                 .reduce(
                     (index, arg) =>
@@ -107,36 +98,27 @@ export class CommandSchemeBuilder {
                         ),
                     -1
                 ) + 1;
-        this.args.push(new PositionalArgumentScheme(index));
+        this.argSchemes.push(new PositionalArgumentScheme(index));
         return this;
     }
 
-    withFlagArgument(name: string): CommandSchemeBuilder {
-        this.args.push(new FlagArgumentScheme(name));
+    withFlagArgument(name: string): CommandScheme {
+        this.argSchemes.push(new FlagArgumentScheme(name));
         return this;
     }
 
-    withValueArgument(name: string): CommandSchemeBuilder {
-        this.args.push(new ValueArgumentScheme(name));
+    withValueArgument(name: string): CommandScheme {
+        this.argSchemes.push(new ValueArgumentScheme(name));
         return this;
     }
 
-    withHelpMessage(helpMessage: string): CommandSchemeBuilder {
-        this.helpMsg = helpMessage;
+    withHelpMessage(helpMessage: string): CommandScheme {
+        this.helpMessage = helpMessage;
         return this;
     }
 
-    callback(callback: CommandSchemeMatchCallback): CommandSchemeBuilder {
-        this.schemeCallback = callback;
+    callback(callback: CommandSchemeMatchCallback): CommandScheme {
+        this.matchCallback = callback;
         return this;
-    }
-
-    build(): CommandScheme {
-        return new CommandScheme(
-            this.name,
-            this.args,
-            this.schemeCallback!!,
-            this.helpMsg
-        );
     }
 }

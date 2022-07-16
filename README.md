@@ -17,9 +17,7 @@ The implementation of these methods depends upon whether you're using an HTML di
 
 After you istantiated the class you provide command schemes to it.
 
-A command scheme can be created through the `CommandSchemeBuilder` helper class, and by providing a combination of command, parameter types and a callback, you define a scheme.
-
-You then add it through the `.command(...)` method to the terminal emulator instance.
+A command scheme can be added through the `.command(...)` method on the emulator class and by providing a combination of command name, parameter types and a callback, you define a scheme.
 
 After you defined your schemes with your callbacks, you then call the `.parse(string)` method on the emulator, and it will tokenize the command line, parse the tokens and assign them to the appropriate category (command name, positional argument, flag argument, value argument). It will then check the schemes and when a match is found it will call the callback defined into the scheme, which is defined like so:
 
@@ -68,12 +66,10 @@ const callback = async (
     return true;
 };
 
-emulator.command(
-    new CommandSchemeBuilder('hello')
-        .withValueArgument('name')
-        .callback(callback)
-        .build()
-);
+emulator.command('hello')
+    .withValueArgument('name')
+    .callback(callback)
+    .build();
 ```
 
 You then parse your terminal input.
