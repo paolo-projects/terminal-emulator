@@ -74,8 +74,7 @@ const callback = async (
 
 emulator.command('hello')
     .withValueArgument('name')
-    .callback(callback)
-    .build();
+    .callback(callback);
 ```
 
 You then parse your terminal input.
